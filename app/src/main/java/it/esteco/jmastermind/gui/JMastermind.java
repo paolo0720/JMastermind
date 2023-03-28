@@ -24,13 +24,11 @@ public class JMastermind {
     private final JFrame frame;
 
     public static void main(String[] args) {
-        ImageIcon smallHoleIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/hole16.png"));
-        ImageIcon largeHoleIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/hole24.png"));
         ImageIcon gripperIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/gripper.png"));
-        SwingUtilities.invokeLater(() -> new JMastermind(smallHoleIcon, largeHoleIcon, gripperIcon).show());
+        SwingUtilities.invokeLater(() -> new JMastermind(gripperIcon).show());
     }
 
-    public JMastermind(Icon smallHoleIcon, Icon largeHoleIcon, Icon gripperIcon) {
+    public JMastermind(Icon gripperIcon) {
         frame = new JFrame("JMastermind");
         frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         JPanel contentPane = new JPanel(new BorderLayout());
@@ -47,7 +45,7 @@ public class JMastermind {
         decodingBoard.setOpaque(false);
         decodingBoard.add(new ShieldableRow(gripperIcon).getRow());
         for (int i = 0; i < 10; i++) {
-            decodingBoard.add(new Row(smallHoleIcon, largeHoleIcon).getRow());
+            decodingBoard.add(new Row().getRow());
         }
         contentPane.add(decodingBoard, BorderLayout.CENTER);
 
