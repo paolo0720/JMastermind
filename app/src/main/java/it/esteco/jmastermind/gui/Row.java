@@ -14,45 +14,67 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class Row {
 
-    private final JPanel row;
+    private final JPanel component;
 
     public Row(Icon smallHoleIcon, Icon largeHoleIcon) {
-        row = new JPanel(new GridBagLayout());
-        row.setOpaque(false);
-        addLargeHole(row, 0, 0, largeHoleIcon);
-        addLargeHole(row, 1, 0, largeHoleIcon);
-        addLargeHole(row, 2, 0, largeHoleIcon);
-        addLargeHole(row, 3, 0, largeHoleIcon);
-        addSmallHole(row, 4, 0, smallHoleIcon);
-        addSmallHole(row, 5, 0, smallHoleIcon);
-        addSmallHole(row, 4, 1, smallHoleIcon);
-        addSmallHole(row, 5, 1, smallHoleIcon);
-        row.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+        component = new JPanel(new GridBagLayout());
+        component.setOpaque(false);
+        addLargeHole(component, 0, largeHoleIcon);
+        addLargeHole(component, 1, largeHoleIcon);
+        addLargeHole(component, 2, largeHoleIcon);
+        addLargeHole(component, 3, largeHoleIcon);
+        addSmallHole(component, 4, 0, smallHoleIcon);
+        addSmallHole(component, 5, 0, smallHoleIcon);
+        addSmallHole(component, 4, 1, smallHoleIcon);
+        addSmallHole(component, 5, 1, smallHoleIcon);
+        component.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
     }
 
     private void addSmallHole(JPanel row, int gridx, int gridy, Icon smallHoleIcon) {
         row.add(new JLabel(smallHoleIcon), new GridBagConstraints(gridx, gridy, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 8, 8));
     }
 
-    private void addLargeHole(JPanel row, int gridx, int gridy, Icon largeHoleIcon) {
+    private void addLargeHole(JPanel row, int gridx, Icon largeHoleIcon) {
         JLabel label = new JLabel(largeHoleIcon);
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JPopupMenu popupMenu = new JPopupMenu();
-                Icon redPeg = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/redpeg36.png"));
-                popupMenu.add(new JMenuItem(redPeg));
+
+                ImageIcon redPegIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/redpeg24.png"));
+                addSetPegAction(popupMenu, redPegIcon, label);
+
+                ImageIcon bluePegIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/bluepeg24.png"));
+                addSetPegAction(popupMenu, bluePegIcon, label);
+
+                ImageIcon greenPegIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/greenpeg24.png"));
+                addSetPegAction(popupMenu, greenPegIcon, label);
+
+                ImageIcon yellowPegIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/yellowpeg24.png"));
+                addSetPegAction(popupMenu, yellowPegIcon, label);
+
+                ImageIcon blackPegIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/blackpeg24.png"));
+                addSetPegAction(popupMenu, blackPegIcon, label);
+
+                ImageIcon whitePegIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/whitepeg24.png"));
+                addSetPegAction(popupMenu, whitePegIcon, label);
+
                 popupMenu.show(label, e.getX(), e.getY());
             }
         });
-        row.add(label, new GridBagConstraints(gridx, gridy, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
+        row.add(label, new GridBagConstraints(gridx, 0, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
+    }
+
+    private static void addSetPegAction(JPopupMenu popupMenu, ImageIcon pegIcon, JLabel label) {
+        JMenuItem setRedPeg = new JMenuItem(pegIcon);
+        setRedPeg.addActionListener(e -> label.setIcon(pegIcon));
+        popupMenu.add(setRedPeg);
     }
 
     public JComponent getRow() {
-        return row;
+        return component;
     }
 }
