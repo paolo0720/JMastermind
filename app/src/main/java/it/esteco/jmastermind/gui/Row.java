@@ -2,13 +2,19 @@ package it.esteco.jmastermind.gui;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class Row {
 
@@ -33,7 +39,17 @@ public class Row {
     }
 
     private void addLargeHole(JPanel row, int gridx, int gridy, Icon largeHoleIcon) {
-        row.add(new JLabel(largeHoleIcon), new GridBagConstraints(gridx, gridy, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
+        JLabel label = new JLabel(largeHoleIcon);
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JPopupMenu popupMenu = new JPopupMenu();
+                Icon redPeg = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/redpeg36.png"));
+                popupMenu.add(new JMenuItem(redPeg));
+                popupMenu.show(label, e.getX(), e.getY());
+            }
+        });
+        row.add(label, new GridBagConstraints(gridx, gridy, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
     }
 
     public JComponent getRow() {
