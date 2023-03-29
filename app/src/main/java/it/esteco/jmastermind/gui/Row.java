@@ -25,20 +25,26 @@ public class Row {
     private static final Icon YELLOW_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/yellowpeg24.png"));
     private static final Icon BLACK_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/blackpeg24.png"));
     private static final Icon WHITE_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/whitepeg24.png"));
+    private static final Icon SELECTED_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/rightarrow24.png"));
+    private static final Icon NOT_SELECTED_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/empty24.png"));
 
     private final JPanel component;
+    private final JLabel selectedLabel;
+    private boolean selected;
 
     public Row() {
         component = new JPanel(new GridBagLayout());
         component.setOpaque(false);
-        addLargeHole(component, 0);
+        selectedLabel = new JLabel(NOT_SELECTED_ICON);
+        component.add(selectedLabel, new GridBagConstraints(0, 0, 1, 2, 0.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 4, 0));
         addLargeHole(component, 1);
         addLargeHole(component, 2);
         addLargeHole(component, 3);
-        addSmallHole(component, 4, 0);
+        addLargeHole(component, 4);
         addSmallHole(component, 5, 0);
-        addSmallHole(component, 4, 1);
+        addSmallHole(component, 6, 0);
         addSmallHole(component, 5, 1);
+        addSmallHole(component, 6, 1);
         component.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
     }
 
@@ -47,27 +53,36 @@ public class Row {
     }
 
     private void addLargeHole(JPanel row, int gridx) {
-        JLabel label = new JLabel(LARGE_HOLE_ICON);
-        label.addMouseListener(new MouseAdapter() {
+        JLabel largeHole = new JLabel(LARGE_HOLE_ICON);
+        largeHole.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JPopupMenu popupMenu = new JPopupMenu();
-                setPegWhenActionPerformed(popupMenu, RED_PEG_ICON, label);
-                setPegWhenActionPerformed(popupMenu, BLUE_PEG_ICON, label);
-                setPegWhenActionPerformed(popupMenu, GREEN_PEG_ICON, label);
-                setPegWhenActionPerformed(popupMenu, YELLOW_PEG_ICON, label);
-                setPegWhenActionPerformed(popupMenu, BLACK_PEG_ICON, label);
-                setPegWhenActionPerformed(popupMenu, WHITE_PEG_ICON, label);
-                popupMenu.show(label, e.getX(), e.getY());
+                if (selected) {
+                    JPopupMenu popupMenu = new JPopupMenu();
+
+                    setPegWhenActionPerformed(popupMenu, RED_PEG_ICON, largeHole);
+                    setPegWhenActionPerformed(popupMenu, BLUE_PEG_ICON, largeHole);
+                    setPegWhenActionPerformed(popupMenu, GREEN_PEG_ICON, largeHole);
+                    setPegWhenActionPerformed(popupMenu, YELLOW_PEG_ICON, largeHole);
+                    setPegWhenActionPerformed(popupMenu, BLACK_PEG_ICON, largeHole);
+                    setPegWhenActionPerformed(popupMenu, WHITE_PEG_ICON, largeHole);
+
+                    popupMenu.show(largeHole, e.getX(), e.getY());
+                }
             }
         });
-        row.add(label, new GridBagConstraints(gridx, 0, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
+        row.add(largeHole, new GridBagConstraints(gridx, 0, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
     }
 
     private static void setPegWhenActionPerformed(JPopupMenu popupMenu, Icon pegIcon, JLabel label) {
         JMenuItem setRedPeg = new JMenuItem(pegIcon);
         setRedPeg.addActionListener(e -> label.setIcon(pegIcon));
         popupMenu.add(setRedPeg);
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        selectedLabel.setIcon(selected ? SELECTED_ICON : NOT_SELECTED_ICON);
     }
 
     public JComponent getRow() {

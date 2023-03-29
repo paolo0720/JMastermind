@@ -45,7 +45,9 @@ public class JMastermind {
         decodingBoard.setOpaque(false);
         decodingBoard.add(new ShieldableRow(gripperIcon).getRow());
         for (int i = 0; i < 10; i++) {
-            decodingBoard.add(new Row().getRow());
+            Row row = new Row();
+            row.setSelected(i == 0);
+            decodingBoard.add(row.getRow());
         }
         contentPane.add(decodingBoard, BorderLayout.CENTER);
 
