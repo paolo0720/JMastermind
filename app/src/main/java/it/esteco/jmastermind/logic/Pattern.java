@@ -3,14 +3,11 @@ package it.esteco.jmastermind.logic;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.random.RandomGenerator;
 
-public record Pattern(PegColor... pegs) {
-
-    public Pattern(PegColor... pegs) {
-        this.pegs = Arrays.copyOf(pegs, pegs.length);
-    }
+public record Pattern(PegColor peg1, PegColor peg2, PegColor peg3, PegColor peg4) {
 
     public static Pattern createRandomPattern(RandomGenerator randomGenerator) {
         PegColor[] values = PegColor.values();
@@ -30,19 +27,22 @@ public record Pattern(PegColor... pegs) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Pattern pattern = (Pattern) o;
-        return Arrays.equals(pegs, pattern.pegs);
+        Pattern other = (Pattern) o;
+        return peg1 == other.peg1 && peg2 == other.peg2 && peg3 == other.peg3 && peg4 == other.peg4;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(pegs);
+        return Objects.hash(peg1, peg2, peg3, peg4);
     }
 
     @Override
     public String toString() {
         return "Pattern{" +
-                "pegs=" + Arrays.toString(pegs) +
+                "peg1=" + peg1 +
+                ", peg2=" + peg2 +
+                ", peg3=" + peg3 +
+                ", peg4=" + peg4 +
                 '}';
     }
 
@@ -54,13 +54,15 @@ public record Pattern(PegColor... pegs) {
             secretPegs.put(pegColor, new AtomicInteger());
             guessPegs.put(pegColor, new AtomicInteger());
         }
+        PegColor[] pegs = new PegColor[]{peg1, peg2, peg3, peg4};
+        PegColor[] other = new PegColor[]{guess.peg1, guess.peg2, guess.peg3, guess.peg4};
 
         for (int i = 0; i < pegs.length; i++) {
-            if (pegs[i] == guess.pegs[i]) {
+            if (pegs[i] == other[i]) {
                 correct++;
             } else {
                 secretPegs.get(pegs[i]).incrementAndGet();
-                guessPegs.get(guess.pegs[i]).incrementAndGet();
+                guessPegs.get(other[i]).incrementAndGet();
             }
         }
         int wrong = 0;

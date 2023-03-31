@@ -201,62 +201,50 @@ public class PatternTest {
     class TestEqualsHashCode {
         @Test
         void testEqualsWithSameObject() {
-            Pattern pattern = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
+            Pattern pattern = new Pattern(RED, BLUE, YELLOW, WHITE);
             assertEquals(pattern, pattern);
         }
 
         @Test
         void testEqualsWithEqualPatterns() {
-            Pattern pattern1 = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
-            Pattern pattern2 = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
+            Pattern pattern1 = new Pattern(RED, BLUE, YELLOW, WHITE);
+            Pattern pattern2 = new Pattern(RED, BLUE, YELLOW, WHITE);
             assertEquals(pattern1, pattern2);
             assertEquals(pattern2, pattern1);
         }
 
         @Test
         void testEqualsWithDifferentPatterns() {
-            Pattern pattern1 = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
-            Pattern pattern2 = new Pattern(PegColor.BLUE, PegColor.YELLOW, PegColor.RED);
+            Pattern pattern1 = new Pattern(RED, BLUE, YELLOW, WHITE);
+            Pattern pattern2 = new Pattern(BLUE, YELLOW, RED, WHITE);
             assertNotEquals(pattern1, pattern2);
             assertNotEquals(pattern2, pattern1);
         }
 
         @Test
         void testEqualsWithNullObject() {
-            Pattern pattern = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
+            Pattern pattern = new Pattern(RED, BLUE, YELLOW, WHITE);
             assertNotEquals(null, pattern);
         }
 
         @Test
         void testEqualsWithDifferentClass() {
-            Pattern pattern = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
+            Pattern pattern = new Pattern(RED, BLUE, YELLOW, WHITE);
             assertNotEquals("not a pattern object", pattern);
         }
 
         @Test
-        void testEqualsWithSamePegColorsDifferentObjects() {
-            PegColor[] pegColors1 = {PegColor.RED, PegColor.BLUE, PegColor.YELLOW};
-            PegColor[] pegColors2 = {PegColor.RED, PegColor.BLUE, PegColor.YELLOW};
-            Pattern pattern1 = new Pattern(pegColors1);
-            Pattern pattern2 = new Pattern(pegColors2);
-            assertEquals(pattern1, pattern2);
-            assertEquals(pattern2, pattern1);
-        }
-
-        @Test
         void testEqualsWithDifferentPegColors() {
-            PegColor[] pegColors1 = {PegColor.RED, PegColor.BLUE, PegColor.YELLOW};
-            PegColor[] pegColors2 = {PegColor.RED, PegColor.BLUE, PegColor.GREEN};
-            Pattern pattern1 = new Pattern(pegColors1);
-            Pattern pattern2 = new Pattern(pegColors2);
+            Pattern pattern1 = new Pattern(RED, BLUE, YELLOW, WHITE);
+            Pattern pattern2 = new Pattern(RED, BLUE, GREEN, WHITE);
             assertNotEquals(pattern1, pattern2);
             assertNotEquals(pattern2, pattern1);
         }
 
         @Test
         void testHashCodeWithEqualPatterns() {
-            Pattern pattern1 = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
-            Pattern pattern2 = new Pattern(PegColor.RED, PegColor.BLUE, PegColor.YELLOW);
+            Pattern pattern1 = new Pattern(RED, BLUE, YELLOW, WHITE);
+            Pattern pattern2 = new Pattern(RED, BLUE, YELLOW, WHITE);
             assertEquals(pattern1.hashCode(), pattern2.hashCode());
         }
 
