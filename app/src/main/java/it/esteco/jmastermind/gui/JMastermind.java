@@ -17,7 +17,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.Random;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -63,7 +62,7 @@ public class JMastermind {
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton check = new JButton("Check");
-        check.addActionListener(this::checkSelecteRow);
+        check.addActionListener(e -> checkActiveRow());
         buttonPanel.add(check);
         buttonPanel.add(new JButton("Quit"));
         buttonPanel.add(new JButton("Help"));
@@ -72,7 +71,7 @@ public class JMastermind {
         frame.setContentPane(contentPane);
     }
 
-    private void checkSelectedRow() {
+    private void checkActiveRow() {
         Row row = rows[activeRowIndex];
         Pattern pattern = row.getPattern();
         row.setFeedback(secret.match(pattern));
@@ -84,7 +83,4 @@ public class JMastermind {
         frame.setVisible(true);
     }
 
-    private void checkSelecteRow(ActionEvent e) {
-        checkSelectedRow();
-    }
 }
