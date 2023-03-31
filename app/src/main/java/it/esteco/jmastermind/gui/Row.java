@@ -68,11 +68,7 @@ public class Row {
         return component;
     }
 
-    public Pattern getPattern() {
-        return new Pattern(codeHoles[0].getPegColor(), codeHoles[1].getPegColor(), codeHoles[2].getPegColor(), codeHoles[3].getPegColor());
-    }
-
-    public void setFeedback(Feedback feedback) {
+    private void setFeedback(Feedback feedback) {
         int checkIndex = 0;
         for (int i = 0; i < feedback.correct(); i++) {
             checkHoles[checkIndex].setBlack();
@@ -82,5 +78,11 @@ public class Row {
             checkHoles[checkIndex].setWhite();
             checkIndex++;
         }
+    }
+
+    public void check(Pattern secret) {
+        Pattern pattern = new Pattern(codeHoles[0].getPegColor(), codeHoles[1].getPegColor(), codeHoles[2].getPegColor(), codeHoles[3].getPegColor());
+        Feedback feedback = secret.match(pattern);
+        setFeedback(feedback);
     }
 }

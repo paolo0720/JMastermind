@@ -26,8 +26,8 @@ public class JMastermind {
     private static final ImageIcon GRIPPER_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/gripper.png"));
     private final JFrame frame;
     private final Row[] rows = new Row[10];
-    private final int activeRowIndex = 0;
     private final Pattern secret;
+    private int activeRowIndex = 0;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new JMastermind().show());
@@ -73,8 +73,10 @@ public class JMastermind {
 
     private void checkActiveRow() {
         Row row = rows[activeRowIndex];
-        Pattern pattern = row.getPattern();
-        row.setFeedback(secret.match(pattern));
+        row.check(secret);
+        row.setActive(false);
+        activeRowIndex++;
+        rows[activeRowIndex].setActive(true);
     }
 
     private void show() {
