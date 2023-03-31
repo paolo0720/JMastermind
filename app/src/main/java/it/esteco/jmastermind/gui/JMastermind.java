@@ -3,7 +3,8 @@
  */
 package it.esteco.jmastermind.gui;
 
-import javax.swing.Icon;
+import it.esteco.jmastermind.logic.Pattern;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,19 +17,26 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.Random;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 public class JMastermind {
 
+    private static final ImageIcon GRIPPER_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/gripper.png"));
     private final JFrame frame;
+    private final Row[] rows = new Row[10];
+    private final int activeRowIndex = 0;
+    private final Pattern secret;
 
     public static void main(String[] args) {
-        ImageIcon gripperIcon = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/gripper.png"));
-        SwingUtilities.invokeLater(() -> new JMastermind(gripperIcon).show());
+        SwingUtilities.invokeLater(() -> new JMastermind().show());
     }
 
-    public JMastermind(Icon gripperIcon) {
+    public JMastermind() {
+        secret = Pattern.createRandomPattern(new Random());
+
         frame = new JFrame("JMastermind");
         frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         JPanel contentPane = new JPanel(new BorderLayout());
@@ -43,16 +51,20 @@ public class JMastermind {
 
         JPanel decodingBoard = new JPanel(new GridLayout(0, 1));
         decodingBoard.setOpaque(false);
-        decodingBoard.add(new ShieldableRow(gripperIcon).getRow());
-        for (int i = 0; i < 10; i++) {
+        decodingBoard.add(new ShieldableRow(GRIPPER_ICON).getRow());
+        for (int i = 0; i < rows.length; i++) {
             Row row = new Row();
-            row.setSelected(i == 0);
             decodingBoard.add(row.getRow());
+            rows[i] = row;
         }
+        rows[activeRowIndex].setActive(true);
+
         contentPane.add(decodingBoard, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(new JButton("Check"));
+        JButton check = new JButton("Check");
+        check.addActionListener(this::checkSelecteRow);
+        buttonPanel.add(check);
         buttonPanel.add(new JButton("Quit"));
         buttonPanel.add(new JButton("Help"));
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -60,9 +72,19 @@ public class JMastermind {
         frame.setContentPane(contentPane);
     }
 
+    private void checkSelectedRow() {
+        Row row = rows[activeRowIndex];
+        Pattern pattern = row.getPattern();
+        row.setFeedback(secret.match(pattern));
+    }
+
     private void show() {
         frame.pack();
         frame.setResizable(false);
         frame.setVisible(true);
+    }
+
+    private void checkSelecteRow(ActionEvent e) {
+        checkSelectedRow();
     }
 }

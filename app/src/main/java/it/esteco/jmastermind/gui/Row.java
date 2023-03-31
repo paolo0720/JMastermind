@@ -1,91 +1,86 @@
 package it.esteco.jmastermind.gui;
 
+import it.esteco.jmastermind.logic.Feedback;
+import it.esteco.jmastermind.logic.Pattern;
+
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class Row {
 
-    private static final Icon LARGE_HOLE_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/hole24.png"));
-    private static final Icon SMALL_HOLE_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/hole16.png"));
-    private static final Icon RED_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/redpeg24.png"));
-    private static final Icon BLUE_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/bluepeg24.png"));
-    private static final Icon GREEN_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/greenpeg24.png"));
-    private static final Icon YELLOW_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/yellowpeg24.png"));
-    private static final Icon BLACK_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/blackpeg24.png"));
-    private static final Icon WHITE_PEG_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/whitepeg24.png"));
-    private static final Icon SELECTED_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/rightarrow24.png"));
-    private static final Icon NOT_SELECTED_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/empty24.png"));
+    private static final Icon ACTIVE_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/rightarrow24.png"));
+    private static final Icon NOT_ACTIVE_ICON = new ImageIcon(ClassLoader.getSystemResource("it/esteco/jmastermind/empty24.png"));
 
     private final JPanel component;
-    private final JLabel selectedLabel;
-    private boolean selected;
+    private final CodeHole[] codeHoles = new CodeHole[4];
+    private final CheckHole[] checkHoles = new CheckHole[4];
+    private final JLabel activeLabel;
 
     public Row() {
         component = new JPanel(new GridBagLayout());
         component.setOpaque(false);
-        selectedLabel = new JLabel(NOT_SELECTED_ICON);
-        component.add(selectedLabel, new GridBagConstraints(0, 0, 1, 2, 0.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 4, 0));
-        addLargeHole(component, 1);
-        addLargeHole(component, 2);
-        addLargeHole(component, 3);
-        addLargeHole(component, 4);
-        addSmallHole(component, 5, 0);
-        addSmallHole(component, 6, 0);
-        addSmallHole(component, 5, 1);
-        addSmallHole(component, 6, 1);
+        activeLabel = new JLabel(NOT_ACTIVE_ICON);
+        component.add(activeLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 4, 0));
+        component.add(createCodePanel(), new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        component.add(createCheckPanel(), new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         component.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
     }
 
-    private void addSmallHole(JPanel row, int gridx, int gridy) {
-        row.add(new JLabel(SMALL_HOLE_ICON), new GridBagConstraints(gridx, gridy, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 8, 8));
+    private JComponent createCodePanel() {
+        JPanel codePanel = new JPanel(new GridLayout(1, 0));
+        codePanel.setOpaque(false);
+        for (int i = 0; i < 4; i++) {
+            CodeHole codeHole = new CodeHole();
+            codeHoles[i] = codeHole;
+            codePanel.add(codeHole.getComponent());
+        }
+        return codePanel;
     }
 
-    private void addLargeHole(JPanel row, int gridx) {
-        JLabel largeHole = new JLabel(LARGE_HOLE_ICON);
-        largeHole.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (selected) {
-                    JPopupMenu popupMenu = new JPopupMenu();
-
-                    setPegWhenActionPerformed(popupMenu, RED_PEG_ICON, largeHole);
-                    setPegWhenActionPerformed(popupMenu, BLUE_PEG_ICON, largeHole);
-                    setPegWhenActionPerformed(popupMenu, GREEN_PEG_ICON, largeHole);
-                    setPegWhenActionPerformed(popupMenu, YELLOW_PEG_ICON, largeHole);
-                    setPegWhenActionPerformed(popupMenu, BLACK_PEG_ICON, largeHole);
-                    setPegWhenActionPerformed(popupMenu, WHITE_PEG_ICON, largeHole);
-
-                    popupMenu.show(largeHole, e.getX(), e.getY());
-                }
-            }
-        });
-        row.add(largeHole, new GridBagConstraints(gridx, 0, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 16, 16));
+    private JComponent createCheckPanel() {
+        JPanel checkPanel = new JPanel(new GridLayout(2, 2));
+        checkPanel.setOpaque(false);
+        for (int i = 0; i < 4; i++) {
+            CheckHole checkHole = new CheckHole();
+            checkHoles[i] = checkHole;
+            checkPanel.add(checkHole.getComponent());
+        }
+        return checkPanel;
     }
 
-    private static void setPegWhenActionPerformed(JPopupMenu popupMenu, Icon pegIcon, JLabel label) {
-        JMenuItem setRedPeg = new JMenuItem(pegIcon);
-        setRedPeg.addActionListener(e -> label.setIcon(pegIcon));
-        popupMenu.add(setRedPeg);
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-        selectedLabel.setIcon(selected ? SELECTED_ICON : NOT_SELECTED_ICON);
+    public void setActive(boolean active) {
+        for (CodeHole codeHole : codeHoles) {
+            codeHole.setActive(true);
+        }
+        activeLabel.setIcon(active ? ACTIVE_ICON : NOT_ACTIVE_ICON);
     }
 
     public JComponent getRow() {
         return component;
+    }
+
+    public Pattern getPattern() {
+        return new Pattern(codeHoles[0].getPegColor(), codeHoles[1].getPegColor(), codeHoles[2].getPegColor(), codeHoles[3].getPegColor());
+    }
+
+    public void setFeedback(Feedback feedback) {
+        int checkIndex = 0;
+        for (int i = 0; i < feedback.correct(); i++) {
+            checkHoles[checkIndex].setBlack();
+            checkIndex++;
+        }
+        for (int i = 0; i < feedback.wrong(); i++) {
+            checkHoles[checkIndex].setWhite();
+            checkIndex++;
+        }
     }
 }
