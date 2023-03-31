@@ -3,12 +3,14 @@
  */
 package it.esteco.jmastermind.gui;
 
+import it.esteco.jmastermind.logic.Feedback;
 import it.esteco.jmastermind.logic.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -27,6 +29,7 @@ public class JMastermind {
     private final JFrame frame;
     private final Row[] rows = new Row[10];
     private final Pattern secret;
+    private final ShieldableRow shieldableRow;
     private int activeRowIndex = 0;
 
     public static void main(String[] args) {
@@ -50,7 +53,8 @@ public class JMastermind {
 
         JPanel decodingBoard = new JPanel(new GridLayout(0, 1));
         decodingBoard.setOpaque(false);
-        decodingBoard.add(new ShieldableRow(GRIPPER_ICON).getRow());
+        shieldableRow = new ShieldableRow(GRIPPER_ICON);
+        decodingBoard.add(shieldableRow.getRow());
         for (int i = 0; i < rows.length; i++) {
             Row row = new Row();
             decodingBoard.add(row.getRow());
@@ -72,9 +76,25 @@ public class JMastermind {
     }
 
     private void checkActiveRow() {
-        Row row = rows[activeRowIndex];
-        row.check(secret);
-        row.setActive(false);
+        Feedback feedback = rows[activeRowIndex].check(secret);
+        if (feedback.correctGuess()) {
+            showSecretCode();
+            showVictotyPopup();
+        } else {
+            activateNextRow();
+        }
+    }
+
+    private void showVictotyPopup() {
+        JOptionPane.showMessageDialog(frame, "You won!");
+    }
+
+    private void showSecretCode() {
+        shieldableRow.show(secret);
+    }
+
+    private void activateNextRow() {
+        rows[activeRowIndex].setActive(false);
         activeRowIndex++;
         rows[activeRowIndex].setActive(true);
     }

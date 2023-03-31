@@ -59,7 +59,7 @@ public class Row {
 
     public void setActive(boolean active) {
         for (CodeHole codeHole : codeHoles) {
-            codeHole.setActive(true);
+            codeHole.setActive(active);
         }
         activeLabel.setIcon(active ? ACTIVE_ICON : NOT_ACTIVE_ICON);
     }
@@ -80,9 +80,10 @@ public class Row {
         }
     }
 
-    public void check(Pattern secret) {
+    public Feedback check(Pattern secret) {
         Pattern pattern = new Pattern(codeHoles[0].getPegColor(), codeHoles[1].getPegColor(), codeHoles[2].getPegColor(), codeHoles[3].getPegColor());
         Feedback feedback = secret.match(pattern);
         setFeedback(feedback);
+        return feedback;
     }
 }

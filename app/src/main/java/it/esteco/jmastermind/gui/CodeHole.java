@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EnumMap;
@@ -36,43 +37,31 @@ public class CodeHole {
     }
 
     private final JLabel hole;
-    private boolean active;
     private PegColor pegColor;
+    private HoleMouseListener holeMouseListener;
 
     public CodeHole() {
         this.hole = new JLabel(CODE_HOLE_ICON);
         hole.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        hole.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (active) {
-                    JPopupMenu popupMenu = new JPopupMenu();
-
-                    setPegWhenActionPerformed(popupMenu, PegColor.RED);
-                    setPegWhenActionPerformed(popupMenu, PegColor.BLUE);
-                    setPegWhenActionPerformed(popupMenu, PegColor.GREEN);
-                    setPegWhenActionPerformed(popupMenu, PegColor.YELLOW);
-                    setPegWhenActionPerformed(popupMenu, PegColor.BLACK);
-                    setPegWhenActionPerformed(popupMenu, PegColor.WHITE);
-
-                    popupMenu.show(hole, e.getX(), e.getY());
-                }
-            }
-        });
     }
 
-    private void setPegWhenActionPerformed(JPopupMenu popupMenu, PegColor pegColor) {
-        Icon pegIcon = PEG_ICONS.get(pegColor);
-        JMenuItem setRedPeg = new JMenuItem(pegIcon);
-        setRedPeg.addActionListener(e -> {
-            hole.setIcon(pegIcon);
-            this.pegColor = pegColor;
-        });
-        popupMenu.add(setRedPeg);
+    public CodeHole(PegColor pegColor) {
+        this();
+        setPegColor(pegColor);
+    }
+
+    private void setPegColor(PegColor pegColor) {
+        this.pegColor = pegColor;
+        hole.setIcon(PEG_ICONS.get(pegColor));
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        if (active) {
+            holeMouseListener = new HoleMouseListener();
+            hole.addMouseListener(holeMouseListener);
+        } else {
+            hole.removeMouseListener(holeMouseListener);
+        }
     }
 
     public PegColor getPegColor() {
@@ -81,5 +70,28 @@ public class CodeHole {
 
     public JComponent getComponent() {
         return hole;
+    }
+
+    private class HoleMouseListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JPopupMenu popupMenu = new JPopupMenu();
+
+            setPegWhenActionPerformed(popupMenu, PegColor.RED);
+            setPegWhenActionPerformed(popupMenu, PegColor.BLUE);
+            setPegWhenActionPerformed(popupMenu, PegColor.GREEN);
+            setPegWhenActionPerformed(popupMenu, PegColor.YELLOW);
+            setPegWhenActionPerformed(popupMenu, PegColor.BLACK);
+            setPegWhenActionPerformed(popupMenu, PegColor.WHITE);
+
+            popupMenu.show((Component) e.getSource(), e.getX(), e.getY());
+        }
+
+        private void setPegWhenActionPerformed(JPopupMenu popupMenu, PegColor pegColor) {
+            JMenuItem setPegColor = new JMenuItem(PEG_ICONS.get(pegColor));
+            setPegColor.addActionListener(e -> setPegColor(pegColor));
+            popupMenu.add(setPegColor);
+        }
+
     }
 }
