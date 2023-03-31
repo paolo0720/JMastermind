@@ -79,13 +79,13 @@ public class JMastermind {
         Feedback feedback = rows[activeRowIndex].check(secret);
         if (feedback.correctGuess()) {
             showSecretCode();
-            showVictotyPopup();
+            showVictoryPopup();
         } else {
             activateNextRow();
         }
     }
 
-    private void showVictotyPopup() {
+    private void showVictoryPopup() {
         JOptionPane.showMessageDialog(frame, "You won!");
     }
 
