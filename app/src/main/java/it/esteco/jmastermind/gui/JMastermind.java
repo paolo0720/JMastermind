@@ -76,13 +76,17 @@ public class JMastermind {
     }
 
     private void checkActiveRow() {
-        Feedback feedback = rows[activeRowIndex].check(secret);
-        if (feedback.correctGuess()) {
+        if (guessIsCorrect()) {
             showSecretCode();
             showVictoryPopup();
         } else {
             activateNextRow();
         }
+    }
+
+    private boolean guessIsCorrect() {
+        Feedback feedback = rows[activeRowIndex].check(secret);
+        return feedback.correctGuess();
     }
 
     private void showVictoryPopup() {
